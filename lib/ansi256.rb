@@ -40,7 +40,11 @@ module Ansi256
     MULTI_PATTERN = /(?:\e\[[0-9;]+m)+/
     EMPTY_TRIPLE = [nil, nil, Set.new]
 
-    def ansify *nums
+    def ansify prev, curr
+      nums = []
+      nums << curr[0] if prev[0] != curr[0]
+      nums << curr[1] if prev[1] != curr[1]
+      nums.concat curr[2].to_a if prev[2].proper_subset? curr[2]
       "\e[#{nums.compact.join ';'}m"
     end
 
@@ -88,7 +92,7 @@ module Ansi256
             reset
           else
             ''
-          end + ansify(current[0], current[1], *current[2].to_a)
+          end + ansify(prev, current)
         end
       }
     end
