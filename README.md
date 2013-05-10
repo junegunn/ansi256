@@ -90,6 +90,11 @@ usage: ansi256 [-u] <[fg][/bg]> [mesage]
 > ansi256 30 "Say '$(ansi256 230/75 "Hello $(ansi256 -u 232/226 World)")'"
 ```
 
+Color chart
+-----------
+
+![xterm-color-chart.png](https://github.com/junegunn/ansi256/raw/master/xterm-color-chart.png)
+
 ## Contributing
 
 1. Fork it
