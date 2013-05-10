@@ -1,6 +1,4 @@
 module Ansi256
-  RESET = "\e[0m"
-
   CODE = {
     :reset      => 0,
     :bold       => 1,
