@@ -34,22 +34,23 @@ module Ansi256
     end
 
     def plain str
-      str.gsub(/\e\[(?:[34]8;5;)?[0-9]+m/, '')
+      str.gsub(PATTERN, '')
     end
 
   private
+    PATTERN = /\e\[(?:[34]8;5;)?[0-9]+m/
+    MULTI_PATTERN = /(?:\e\[(?:[34]8;5;)?[0-9]+m)+/
+
     def wrap str, color
       current = [nil, nil, nil]
-      pattern = /\e\[(?:[34]8;5;)?[0-9]+m/
-      multi_pattern = /(?:\e\[(?:[34]8;5;)?[0-9]+m)+/
 
-      (color + str.gsub(pattern) { |m|
+      (color + str.gsub(PATTERN) { |m|
         if m =~ /\e\[0m/
           m + color
         else
           m
         end
-      } + RESET).gsub(multi_pattern) { |codes|
+      } << RESET).gsub(MULTI_PATTERN) { |codes|
         prev = current.dup
         codes.split(/(?<=m)/).each do |code|
           case code
@@ -69,7 +70,7 @@ module Ansi256
         elsif current == [nil, nil, nil]
           RESET
         else
-          if [0, 1, 2].any? { |i| prev[i] && !current[i] }
+          if (0..2).any? { |i| prev[i] && !current[i] }
             RESET
           else
             ''

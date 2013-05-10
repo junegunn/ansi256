@@ -55,13 +55,40 @@ Unlike the other similar gems, Ansi256 allows you to nest colored text.
 ```ruby
 require 'ansi256'
 
-puts world = "World".bg(226).fg(232).underline
-puts hello = "Hello #{world} !".fg(230).bg(75)
-puts say_hello_world = "Say '#{hello}'".fg(30)
+puts           world = "World".bg(226).fg(232).underline
+puts     hello_world = "Hello #{world} !".fg(230).bg(75)
+puts say_hello_world = "Say '#{hello_world}'".fg(30)
 puts say_hello_world.plain.fg(27)
 ```
 
 ![say-hello-world](https://github.com/junegunn/ansi256/raw/master/say-hello-world.png)
+
+_"Just gimme the code"_
+-----------------------
+
+```ruby
+Ansi256.fg(232)
+Ansi256.bg(226)
+Ansi256.underline
+Ansi256.reset
+```
+
+
+ansi256 executable
+------------------
+
+Ansi256 comes with ansi256 script which can be used as follows
+
+```bash
+> ansi256
+usage: ansi256 [-u] <[fg][/bg]> [mesage]
+
+> ansi256 232/226 "Hello world"
+
+> ls | ansi256 -u /226
+
+> ansi256 30 "Say '$(ansi256 230/75 "Hello $(ansi256 -u 232/226 World)")'"
+```
 
 ## Contributing
 

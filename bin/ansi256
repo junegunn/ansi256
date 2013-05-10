@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+require 'rubygems'
+require 'ansi256'
+
+underline = ARGV.delete '-u'
+
+if ARGV.length < 1
+  puts 'usage: ansi256 [-u] <[fg][/bg]> [message]'
+  exit 1
+end
+
+fgbg, *msg = ARGV
+fg,   bg  = fgbg.split '/'
+
+def output msg, fg, bg, ul
+  msg = msg.fg(fg)    if fg
+  msg = msg.bg(bg)    if bg
+  msg = msg.underline if ul
+  puts msg
+end
+
+if !msg.empty?
+  msg.each do |m|
+    output m, fg, bg, underline
+  end
+else
+  while msg = $stdin.gets
+    output msg.chomp, fg, bg, underline
+  end
+end
