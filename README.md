@@ -9,6 +9,8 @@ Decorate text with 256-color ANSI codes.
 Basic usage
 -----------
 
+### 256-colors
+
 ```ruby
 require 'ansi256'
 
@@ -27,25 +29,21 @@ puts "Colorize me".fg(111).bg(226).underline.plain
 
 ![colorize-me](https://github.com/junegunn/ansi256/raw/master/colorize-me.png)
 
-Added methods (`fg`, `bg`, `underline`, and `plain`)
-return new String object and do not modify the original String.
-
-256-color table
----------------
+### 16 named colors
 
 ```ruby
-require 'ansi256'
-
-def cfmt col
-  col.to_s.rjust(5).fg(232).bg(col)
-end
-
-puts (0..7).map  { |col| cfmt col }.join
-puts (8..15).map { |col| cfmt col }.join
-(16..255).each_slice(6) do |slice|
-  puts slice.map { |col| cfmt col }.join
-end
+s = "Colorize me"
+puts [ s.black,   s.black.bold,   s.white.bold.on_black   ].join ' '
+puts [ s.red,     s.red.bold,     s.white.bold.on_red     ].join ' '
+puts [ s.green,   s.green.bold,   s.white.bold.on_green   ].join ' '
+puts [ s.yellow,  s.yellow.bold,  s.white.bold.on_yellow  ].join ' '
+puts [ s.blue,    s.blue.bold,    s.white.bold.on_blue    ].join ' '
+puts [ s.magenta, s.magenta.bold, s.white.bold.on_magenta ].join ' '
+puts [ s.cyan,    s.cyan.bold,    s.white.bold.on_cyan    ].join ' '
+puts [ s.white,   s.white.bold,   s.white.bold.on_white   ].join ' '
 ```
+
+![colorize-me-16](https://github.com/junegunn/ansi256/raw/master/colorize-me-16.png)
 
 Nesting
 -------
@@ -63,12 +61,15 @@ puts say_hello_world.plain.fg(27)
 
 ![say-hello-world](https://github.com/junegunn/ansi256/raw/master/say-hello-world.png)
 
-_"Just gimme the code"_
+_"Just gimme the code!"_
 -----------------------
 
 ```ruby
 Ansi256.fg(232)
 Ansi256.bg(226)
+Ansi256.green
+Ansi256.on_green
+Ansi256.bold
 Ansi256.underline
 Ansi256.reset
 ```
@@ -77,7 +78,7 @@ Ansi256.reset
 ansi256 executable
 ------------------
 
-Ansi256 comes with ansi256 script which can be used as follows
+Ansi256 comes with `ansi256` script which can be used as follows
 
 ```bash
 > ansi256
@@ -93,9 +94,28 @@ usage: ansi256 [-u] <[fg][/bg]> [mesage]
 Color chart
 -----------
 
+### 256-color table
+
+```ruby
+require 'ansi256'
+
+def cfmt col
+  col.to_s.rjust(5).fg(232).bg(col)
+end
+
+puts (0..7).map  { |col| cfmt col }.join
+puts (8..15).map { |col| cfmt col }.join
+(16..255).each_slice(6) do |slice|
+  puts slice.map { |col| cfmt col }.join
+end
+```
+
+### Reference chart
+
 ![xterm-color-chart.png](https://github.com/junegunn/ansi256/raw/master/xterm-color-chart.png)
 
-## Contributing
+Contributing
+------------
 
 1. Fork it
 2. Create your feature branch (`git checkout -b my-new-feature`)

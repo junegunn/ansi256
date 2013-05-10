@@ -26,3 +26,14 @@ puts hello = "Hello #{world} !".fg(230).bg(75)
 puts say_hello_world = "Say '#{hello}'".fg(30)
 puts say_hello_world.plain.fg(27)
 
+# Named colors
+s = "Colorize me"
+puts [ s.black,   s.black.bold,   s.white.bold.on_black   ].join ' '
+puts [ s.red,     s.red.bold,     s.white.bold.on_red     ].join ' '
+puts [ s.green,   s.green.bold,   s.white.bold.on_green   ].join ' '
+puts [ s.yellow,  s.yellow.bold,  s.white.bold.on_yellow  ].join ' '
+puts [ s.blue,    s.blue.bold,    s.white.bold.on_blue    ].join ' '
+puts [ s.magenta, s.magenta.bold, s.white.bold.on_magenta ].join ' '
+puts [ s.cyan,    s.cyan.bold,    s.white.bold.on_cyan    ].join ' '
+puts [ s.white,   s.white.bold,   s.white.bold.on_white   ].join ' '
+

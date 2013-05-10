@@ -12,8 +12,10 @@ module Ansi256
       Ansi256.plain self
     end
 
-    def underline
-      Ansi256.underline self
+    Ansi256::CODE.each do |name, code|
+      define_method name do
+        Ansi256.send name, self
+      end
     end
   end
 end
