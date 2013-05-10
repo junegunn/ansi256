@@ -29,7 +29,13 @@ puts say_hello_world.plain.fg(27)
 # Nesting 2
 puts world = "World".bg(226).blue.underline
 puts hello = "Hello #{world} Hello".white.bold
-puts say_hello_world = "Say '#{hello}'".fg(30)
+puts say_hello_world = "Say '#{hello}'".fg(30).underline
+puts say_hello_world.plain.fg(27)
+
+# Nesting 3
+puts world = "World".blue.underline
+puts hello = "Hello #{world} Hello".blue.bold
+puts say_hello_world = "Say '#{hello}'".fg(30).underline
 puts say_hello_world.plain.fg(27)
 
 # Named colors

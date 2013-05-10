@@ -89,6 +89,7 @@ module Ansi256
           reset
         else
           if (0..1).any? { |i| prev[i] && !current[i] } || current[2].proper_subset?(prev[2])
+            prev = EMPTY_TRIPLE
             reset
           else
             ''
