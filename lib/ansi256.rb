@@ -44,7 +44,7 @@ module Ansi256
       nums = []
       nums << curr[0] if prev[0] != curr[0]
       nums << curr[1] if prev[1] != curr[1]
-      nums.concat curr[2].to_a if prev[2].proper_subset? curr[2]
+      nums.concat curr[2].to_a if prev[2] != curr[2]
       "\e[#{nums.compact.join ';'}m"
     end
 

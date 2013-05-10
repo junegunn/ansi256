@@ -26,6 +26,12 @@ puts hello = "Hello #{world} !".fg(230).bg(75)
 puts say_hello_world = "Say '#{hello}'".fg(30)
 puts say_hello_world.plain.fg(27)
 
+# Nesting 2
+puts world = "World".bg(226).blue.underline
+puts hello = "Hello #{world} Hello".white.bold
+puts say_hello_world = "Say '#{hello}'".fg(30)
+puts say_hello_world.plain.fg(27)
+
 # Named colors
 s = "Colorize me"
 puts [ s.black,   s.black.bold,   s.white.bold.on_black   ].join ' '
