@@ -55,6 +55,7 @@ module Ansi256
         end
       } << reset).gsub(MULTI_PATTERN) { |ansi|
         prev = current.dup
+        prev[2] = prev[2].dup
         codes = ansi.scan(/\d+/).map(&:to_i)
 
         idx = -1
@@ -83,7 +84,7 @@ module Ansi256
         elsif current == EMPTY_TRIPLE
           reset
         else
-          if (0..1).any? { |i| prev[i] && !current[i] }
+          if (0..1).any? { |i| prev[i] && !current[i] } || current[2].proper_subset?(prev[2])
             reset
           else
             ''
