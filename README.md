@@ -1,6 +1,11 @@
-# Ansi256
+# ansi256
 
-Decorate text with 256-color ANSI codes.
+ansi256 is a rubygem for colorizing text with 256-color ANSI codes.
+
+Features:
+- Supports both named color codes and numeric 256-color codes
+- Allows nesting of colored text
+- Generates optimal(shortest) code sequence
 
 ## Installation
 
