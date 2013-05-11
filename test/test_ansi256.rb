@@ -135,5 +135,8 @@ class TestAnsi256 < MiniTest::Unit::TestCase
       "Wow #{'hello'.fg(100).underline.bg(50)} world".fg(200).bg(250)
     assert_equal "Wow hello world",
       "Wow #{'hello'.fg(100).underline.bg(50)} world".fg(200).bg(250).plain
+
+    assert_equal "\e[32;48;5;200;1mWow \e[38;5;100;44;1;4mhello\e[0m\e[32;48;5;200;1m world\e[0m",
+      "Wow #{'hello'.fg(100).underline.on_blue} world".green.bold.bg(200)
   end
 end
