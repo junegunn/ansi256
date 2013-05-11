@@ -1,23 +1,31 @@
-require "ansi256/version"
-require "ansi256/code"
-require "ansi256/mixin"
 require 'set'
+require 'ansi256/version'
+require 'ansi256/code'
+require 'ansi256/mixin'
 
 module Ansi256
   class << self
     def fg code, str = nil
       if str
         wrap str, Ansi256.fg(code)
-      else
+      elsif NAMED_COLORS.include?(code)
+        "\e[#{CODE[code]}m"
+      elsif code.is_a?(Fixnum) && (0..255).include?(code)
         "\e[38;5;#{code}m"
+      else
+        raise ArgumentError, "Invalid color code: #{code}"
       end
     end
 
     def bg code, str = nil
       if str
         wrap str, Ansi256.bg(code)
-      else
+      elsif NAMED_COLORS.include?(code)
+        "\e[#{CODE[code] + 10}m"
+      elsif code.is_a?(Fixnum) && (0..255).include?(code)
         "\e[48;5;#{code}m"
+      else
+        raise ArgumentError, "Invalid color code: #{code}"
       end
     end
 
@@ -36,9 +44,9 @@ module Ansi256
     end
 
   private
-    PATTERN = /\e\[[0-9;]+m/
-    MULTI_PATTERN = /(?:\e\[[0-9;]+m)+/
-    EMPTY_TRIPLE = [nil, nil, Set.new]
+    PATTERN       = /\e\[[0-9;]+m/.freeze
+    MULTI_PATTERN = /(?:\e\[[0-9;]+m)+/.freeze
+    EMPTY_TRIPLE  = [nil, nil, Set.new].freeze
 
     def ansify prev, curr
       nums = []

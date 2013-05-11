@@ -15,7 +15,7 @@ Features:
 Basic usage
 -----------
 
-### 256-colors
+### Numeric 256-color codes
 
 ```ruby
 require 'ansi256'
@@ -87,14 +87,32 @@ ansi256 executable
 Ansi256 comes with `ansi256` script which can be used as follows
 
 ```bash
-> ansi256
 usage: ansi256 [-u] <[fg][/bg]> [mesage]
 
-> ansi256 232/226 "Hello world"
+# Numeric color codes
+ansi256 232 "Hello world"
+ansi256 /226 "Hello world"
+ansi256 232/226 "Hello world"
 
-> ls | ansi256 -u /226
+# Named color codes
+ansi256 yellow "Hello world"
+ansi256 /blue "Hello world"
+ansi256 yellow/blue "Hello world"
 
-> ansi256 30 "Say '$(ansi256 230/75 "Hello $(ansi256 -u 232/226 World)")'"
+# Mixed color codes
+ansi256 yellow/232 "Hello world"
+
+# Bold yellow
+ansi256 yellow/232 -b "Hello world"
+
+# With underline
+ansi256 yellow/232 -b -u "Hello world"
+
+# Colorizing STDIN
+find / | ansi256 -u /226
+
+# Nesting
+ansi256 30 "Say '$(ansi256 230/75 "Hello $(ansi256 -u 232/226 World)")'"
 ```
 
 Color chart

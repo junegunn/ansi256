@@ -21,5 +21,16 @@ module Ansi256
     :on_magenta => 45,
     :on_cyan    => 46,
     :on_white   => 47,
-  }
+  }.freeze
+
+  NAMED_COLORS = Set[
+   :black,
+   :red,
+   :green,
+   :yellow,
+   :blue,
+   :magenta,
+   :cyan,
+   :white,
+  ].freeze
 end
