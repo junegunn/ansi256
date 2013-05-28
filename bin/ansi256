@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 require 'rubygems'
-$LOAD_PATH.unshift 'lib'
 require 'ansi256'
 
 bold      = ARGV.delete '-b'
