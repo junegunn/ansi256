@@ -51,6 +51,16 @@ puts [ s.white,   s.white.bold,   s.white.bold.on_white   ].join ' '
 
 ![colorize-me-16](https://github.com/junegunn/ansi256/raw/master/colorize-me-16.png)
 
+### RGB color approximated to 256-color ANSI code
+
+```ruby
+puts "RGB Color (RRGGBB)".fg('ff9930').bg('203366')
+
+puts "RGB Color (R-G-B-)".fg('f90').bg('036')
+
+puts "RGB Color (Monochrome)".fg('ef').bg('3f')
+```
+
 Nesting
 -------
 

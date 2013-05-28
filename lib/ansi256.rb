@@ -12,6 +12,8 @@ module Ansi256
         "\e[#{CODE[code]}m"
       elsif code.is_a?(Fixnum) && (0..255).include?(code)
         "\e[38;5;#{code}m"
+      elsif ansirgb = ansicode_for_rgb(code)
+        "\e[38;5;#{ansirgb}m"
       else
         raise ArgumentError, "Invalid color code: #{code}"
       end
@@ -24,6 +26,8 @@ module Ansi256
         "\e[#{CODE[code] + 10}m"
       elsif code.is_a?(Fixnum) && (0..255).include?(code)
         "\e[48;5;#{code}m"
+      elsif ansirgb = ansicode_for_rgb(code)
+        "\e[48;5;#{ansirgb}m"
       else
         raise ArgumentError, "Invalid color code: #{code}"
       end
@@ -54,6 +58,27 @@ module Ansi256
       nums << curr[1] if prev[1] != curr[1]
       nums.concat curr[2].to_a if prev[2] != curr[2]
       "\e[#{nums.compact.join ';'}m"
+    end
+
+    def ansicode_for_rgb rgb
+      return unless rgb.is_a?(String) &&
+                    rgb =~ /^#?([0-9a-f]+)$/i
+      rgb = $1
+
+      case rgb.length
+      when 2
+        m = (256 - 231) * rgb.to_i(16) / 256
+        return m == 0 ? 16 : (231 + m)
+      when 3
+        r, g, b = rgb.each_char.map { |e| (e * 2).to_i(16) }
+      when 6
+        r, g, b = rgb.each_char.each_slice(2).map { |e| e.join.to_i(16) }
+      else
+        return
+      end
+
+      r, g, b = [r, g, b].map { |e| 6 * e / 256 }
+      r * 36 + g * 6 + b + 16
     end
 
     def wrap str, color

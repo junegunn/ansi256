@@ -115,6 +115,8 @@ class TestAnsi256 < MiniTest::Unit::TestCase
     assert_raises(ArgumentError) { Ansi256.fg(300) }
     assert_raises(ArgumentError) { Ansi256.bg(-1) }
     assert_raises(ArgumentError) { Ansi256.bg(300) }
+    assert_raises(ArgumentError) { Ansi256.bg('ffaa') }
+    assert_raises(ArgumentError) { Ansi256.bg('ffeeffaa') }
   end
 
   def test_fg_bg_underline
@@ -138,5 +140,58 @@ class TestAnsi256 < MiniTest::Unit::TestCase
 
     assert_equal "\e[32;48;5;200;1mWow \e[38;5;100;44;1;4mhello\e[0m\e[32;48;5;200;1m world\e[0m",
       "Wow #{'hello'.fg(100).underline.on_blue} world".green.bold.bg(200)
+  end
+
+  def test_rgb
+    {
+      '00'     => 16,
+      '000000' => 16,
+      '111'    => 16,
+      '11'     => 232,
+      '101010' => 16,
+      '1a'     => 233,
+      '1a1a1a' => 16,
+      '20'     => 234,
+      '22'     => 234,
+      '202020' => 16,
+      '222222' => 16,
+      '222222' => 16,
+      'ff'     => 255,
+      'ffffff' => 231,
+      'FFFFFF' => 231,
+      'ff0'    => 226,
+      'ffff00' => 226,
+      'ff0000' => 196,
+      '00ff00' => 46,
+      '0000ff' => 21,
+      'ff9900' => 214,
+      '00ffff' => 51,
+      '0ff'    => 51,
+    }.each do |rgb, ansi|
+      assert_equal ansi, Ansi256.fg(rgb).scan(/[0-9]+/).last.to_i
+      assert_equal ansi, Ansi256.bg(rgb).scan(/[0-9]+/).last.to_i
+    end
+    [:bg, :fg].each do |m|
+      (0..255).each do |r|
+        color = r.to_s(16).rjust(2, '0') * 3
+        print Ansi256.send(m, color, color + ' ')
+      end
+      (0..255).each do |r|
+        color = r.to_s(16).rjust(2, '0')
+        print Ansi256.send(m, color, color + ' ')
+      end
+    end
+    0.step(255, 20) do |r|
+      0.step(255, 20) do |g|
+        0.step(255, 20) do |b|
+          color = [r, g, b].map { |c| c.to_s(16).rjust(2, '0') }.join
+          print Ansi256.bg(color, color + ' ')
+        end
+      end
+    end
+    puts "RGB Color".fg('ff9900').bg('003366')
+    puts "RGB Color".fg('f90').bg('#036')
+    puts "RGB Color".fg('#ff9900').bg('#003366')
+    puts "RGB Color (Monochrome)".fg('ef').bg('3a')
   end
 end
