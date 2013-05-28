@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 require 'rubygems'
+$LOAD_PATH.unshift 'lib'
 require 'ansi256'
 
 bold      = ARGV.delete '-b'
@@ -13,7 +14,14 @@ end
 fgbg, *msg = ARGV
 fg,   bg   = fgbg.split('/').map { |e|
   if !e.to_s.empty?
-    (e =~ /^\d+$/) ? e.to_i : e.downcase.to_sym
+    case e
+    when /^#?[0-9a-f]{6}$/i
+      e
+    when /^\d+$/
+      e.to_i
+    else
+      e.downcase.to_sym
+    end
   end
 }
 

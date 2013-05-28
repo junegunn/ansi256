@@ -109,6 +109,9 @@ ansi256 yellow "Hello world"
 ansi256 /blue "Hello world"
 ansi256 yellow/blue "Hello world"
 
+# RGB colors (only support 6-letter hex codes)
+ansi256 ff9900/000033 "Hello world"
+
 # Mixed color codes
 ansi256 yellow/232 "Hello world"
 
