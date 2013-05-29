@@ -194,4 +194,23 @@ class TestAnsi256 < MiniTest::Unit::TestCase
     puts "RGB Color".fg('#ff9900').bg('#003366')
     puts "RGB Color (Monochrome)".fg('ef').bg('3a')
   end
+
+  def test_enabled
+    2.times do
+      [:fg, :bg].each do |m|
+        assert Ansi256.enabled?
+        hello = "hello".send(m, 'f90')
+        assert_equal 'hello', hello.plain
+
+        Ansi256.enabled = false
+        assert !Ansi256.enabled?
+        assert hello.length > "hello".send(m, 'f90').length
+        assert_equal 'hello', hello.plain
+
+        Ansi256.enabled = true
+        assert Ansi256.enabled?
+        assert_equal hello, "hello".send(m, 'f90')
+      end
+    end
+  end
 end

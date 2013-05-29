@@ -77,8 +77,8 @@ puts say_hello_world.plain.fg(27)
 
 ![say-hello-world](https://github.com/junegunn/ansi256/raw/master/say-hello-world.png)
 
-_"Just gimme the code!"_
------------------------
+Ansi256 methods
+---------------
 
 ```ruby
 Ansi256.fg(232)
@@ -88,8 +88,24 @@ Ansi256.on_green
 Ansi256.bold
 Ansi256.underline
 Ansi256.reset
+
+Ansi256.fg(232, 'Hello')
+Ansi256.bg(226, 'World')
+Ansi256.green('Hello World')
 ```
 
+Disabling extended String methods
+---------------------------------
+
+```ruby
+Ansi256.enabled?
+  # true
+
+Ansi256.enabled = false
+
+"Hello".fg(232)
+  # Hello
+```
 
 ansi256 executable
 ------------------

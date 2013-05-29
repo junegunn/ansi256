@@ -133,7 +133,4 @@ module Ansi256
   end
 end
 
-class String
-  include Ansi256::Mixin
-end
-
+Ansi256.enabled = true
