@@ -101,7 +101,8 @@ Disabling extended String methods
 Ansi256.enabled?
   # true
 
-Ansi256.enabled = false
+# Print colored output only when STDOUT is tty
+Ansi256.enabled = $stdout.tty?
 
 "Hello".fg(232)
   # Hello
