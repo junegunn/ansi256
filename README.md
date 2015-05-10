@@ -1,5 +1,7 @@
 # ansi256
 
+[![Join the chat at https://gitter.im/junegunn/ansi256](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/junegunn/ansi256?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ansi256 is a rubygem for colorizing text with 256-color ANSI codes.
 
 Features:
