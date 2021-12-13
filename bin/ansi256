@@ -1,43 +1,45 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require 'rubygems'
 require 'ansi256'
 
-bold      = ARGV.delete '-b'
-underline = ARGV.delete '-u'
+attrs = [
+  ARGV.delete('-b') && :bold,
+  ARGV.delete('-d') && :dim,
+  ARGV.delete('-i') && :italic,
+  ARGV.delete('-u') && :underline
+].compact
 
-if ARGV.length < 1
-  puts 'usage: ansi256 [-b] [-u] <[fg][/bg]> [message]'
+if ARGV.empty?
+  puts 'usage: ansi256 [-b] [-d] [-i] [-u] <[fg][/bg]> [message]'
   exit 1
 end
 
-fgbg, *msg = ARGV
-fg,   bg   = fgbg.split('/').map { |e|
-  if !e.to_s.empty?
-    case e
-    when /^#?[0-9a-f]{6}$/i
-      e
-    when /^\d+$/
-      e.to_i
-    else
-      e.downcase.to_sym
-    end
-  end
-}
+fgbg, *rest = ARGV
+fg, bg = fgbg.split('/').map do |e|
+  next if e.empty?
 
-def output msg, fg, bg, ul, b
-  msg = msg.fg(fg)    if fg
-  msg = msg.bg(bg)    if bg
-  msg = msg.underline if ul
-  msg = msg.bold      if b
+  case e
+  when /^#?[0-9a-f]{6}$/i then e
+  when /^\d+$/ then e.to_i
+  else e.downcase.to_sym
+  end
+end
+
+output = lambda do |msg|
+  msg = msg.fg(fg) if fg
+  msg = msg.bg(bg) if bg
+  msg = attrs.reduce(msg) { |m, a| m.send(a) }
   puts msg
 end
 
-if !msg.empty?
-  msg.each do |m|
-    output m, fg, bg, underline, bold
+if !rest.empty?
+  rest.each do |m|
+    output.call(m)
   end
 else
-  while msg = $stdin.gets
-    output msg.chomp, fg, bg, underline, bold
+  while (msg = $stdin.gets)
+    output.call(msg.chomp)
   end
 end

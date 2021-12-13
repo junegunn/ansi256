@@ -67,6 +67,8 @@ class TestAnsi256 < MiniTest::Unit::TestCase
   def test_just_code
     assert_equal "\e[0m", Ansi256.reset
     assert_equal "\e[1m", Ansi256.bold
+    assert_equal "\e[2m", Ansi256.dim
+    assert_equal "\e[3m", Ansi256.italic
     assert_equal "\e[4m", Ansi256.underline
 
     assert_equal "\e[30m", Ansi256.black

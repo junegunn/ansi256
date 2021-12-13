@@ -86,6 +86,8 @@ Ansi256.bg(226)
 Ansi256.green
 Ansi256.on_green
 Ansi256.bold
+Ansi256.dim
+Ansi256.italic
 Ansi256.underline
 Ansi256.reset
 
@@ -114,7 +116,7 @@ ansi256 executable
 Ansi256 comes with `ansi256` script which can be used as follows
 
 ```bash
-usage: ansi256 [-u] <[fg][/bg]> [mesage]
+usage: ansi256 [-b] [-d] [-i] [-u] <[fg][/bg]> [message]
 
 # Numeric color codes
 ansi256 232 "Hello world"
