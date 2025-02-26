@@ -3,7 +3,7 @@ $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'ansi256'
 require 'minitest/autorun'
 
-class TestAnsi256 < MiniTest::Unit::TestCase
+class TestAnsi256 < Minitest::Test
   def cfmt col
     col.to_s.rjust(5).fg(232).bg(col)
   end

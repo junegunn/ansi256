@@ -10,7 +10,7 @@ module Ansi256
         wrap str, Ansi256.fg(code)
       elsif NAMED_COLORS.include?(code)
         "\e[#{CODE[code]}m"
-      elsif code.is_a?(Fixnum) && (0..255).include?(code)
+      elsif code.is_a?(Integer) && (0..255).include?(code)
         "\e[38;5;#{code}m"
       elsif ansirgb = ansicode_for_rgb(code)
         "\e[38;5;#{ansirgb}m"
@@ -24,7 +24,7 @@ module Ansi256
         wrap str, Ansi256.bg(code)
       elsif NAMED_COLORS.include?(code)
         "\e[#{CODE[code] + 10}m"
-      elsif code.is_a?(Fixnum) && (0..255).include?(code)
+      elsif code.is_a?(Integer) && (0..255).include?(code)
         "\e[48;5;#{code}m"
       elsif ansirgb = ansicode_for_rgb(code)
         "\e[48;5;#{ansirgb}m"
