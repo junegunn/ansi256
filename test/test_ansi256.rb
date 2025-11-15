@@ -72,6 +72,8 @@ class TestAnsi256 < Minitest::Test
     assert_equal "\e[2m", Ansi256.dim
     assert_equal "\e[3m", Ansi256.italic
     assert_equal "\e[4m", Ansi256.underline
+    assert_equal "\e[7m", Ansi256.inverse
+    assert_equal "\e[9m", Ansi256.strikethrough
 
     assert_equal "\e[30m", Ansi256.black
     assert_equal "\e[31m", Ansi256.red

@@ -5,6 +5,8 @@ module Ansi256
     dim: 2,
     italic: 3,
     underline: 4,
+    inverse: 7,
+    strikethrough: 9,
 
     black: 30,
     red: 31,
