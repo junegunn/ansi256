@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'set'
 require 'ansi256/version'
 require 'ansi256/code'
@@ -5,7 +7,7 @@ require 'ansi256/mixin'
 
 module Ansi256
   class << self
-    def fg code, str = nil
+    def fg(code, str = nil)
       if str
         wrap str, Ansi256.fg(code)
       elsif NAMED_COLORS.include?(code)
@@ -19,7 +21,7 @@ module Ansi256
       end
     end
 
-    def bg code, str = nil
+    def bg(code, str = nil)
       if str
         wrap str, Ansi256.bg(code)
       elsif NAMED_COLORS.include?(code)
@@ -43,16 +45,17 @@ module Ansi256
       end
     end
 
-    def plain str
+    def plain(str)
       str.gsub(PATTERN, '')
     end
 
-  private
-    PATTERN       = /\e\[[0-9;]+m/.freeze
-    MULTI_PATTERN = /(?:\e\[[0-9;]+m)+/.freeze
+    private
+
+    PATTERN       = /\e\[[0-9;]+m/
+    MULTI_PATTERN = /(?:\e\[[0-9;]+m)+/
     EMPTY_TRIPLE  = [nil, nil, Set.new].freeze
 
-    def ansify prev, curr
+    def ansify(prev, curr)
       nums = []
       nums << curr[0] if prev[0] != curr[0]
       nums << curr[1] if prev[1] != curr[1]
@@ -60,10 +63,11 @@ module Ansi256
       "\e[#{nums.compact.join ';'}m"
     end
 
-    def ansicode_for_rgb rgb
+    def ansicode_for_rgb(rgb)
       return unless rgb.is_a?(String) &&
                     rgb =~ /^#?([0-9a-f]+)$/i
-      rgb = $1
+
+      rgb = ::Regexp.last_match(1)
 
       case rgb.length
       when 2
@@ -81,16 +85,16 @@ module Ansi256
       r * 36 + g * 6 + b + 16
     end
 
-    def wrap str, color
+    def wrap(str, color)
       current = [nil, nil, Set.new]
 
-      (color + str.gsub(PATTERN) { |m|
+      (color + str.gsub(PATTERN) do |m|
         if m =~ /\e\[[^m]*\b0m/
           m + color
         else
           m
         end
-      } << reset).gsub(MULTI_PATTERN) { |ansi|
+      end << reset).gsub(MULTI_PATTERN) do |ansi|
         prev = current.dup
         prev[2] = prev[2].dup
         codes = ansi.scan(/\d+/).map(&:to_i)
@@ -128,7 +132,7 @@ module Ansi256
             ''
           end + ansify(prev, current)
         end
-      }
+      end
     end
   end
 end

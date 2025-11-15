@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 $VERBOSE = true
-$LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
+$LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 require 'ansi256'
 require 'minitest/autorun'
 
 class TestAnsi256 < Minitest::Test
-  def cfmt col
+  def cfmt(col)
     col.to_s.rjust(5).fg(232).bg(col)
   end
 
@@ -28,40 +30,40 @@ class TestAnsi256 < Minitest::Test
 
   def test_nesting_hello_world
     # Nesting
-    puts world = "World".bg(226).fg(232).underline
+    puts world = 'World'.bg(226).fg(232).underline
     puts hello = "Hello #{world} !".fg(230).bg(75)
     puts say_hello_world = "Say '#{hello}'".fg(30)
     puts say_hello_world.plain.fg(27)
   end
 
   def test_nesting_hello_world2
-    puts world = "World".bg(226).blue.underline
+    puts world = 'World'.bg(226).blue.underline
     puts hello = "Hello #{world} Hello".white.bold
     puts say_hello_world = "Say '#{hello}'".fg(30).underline
     puts say_hello_world.plain.fg(27)
   end
 
   def test_nesting_hello_world3
-    puts world = "World".blue.underline
+    puts world = 'World'.blue.underline
     puts hello = "Hello #{world} Hello".blue.bold
     puts say_hello_world = "Say '#{hello}'".fg(30).underline
     puts say_hello_world.plain.fg(27)
   end
 
   def test_named_colors
-    s = "Colorize me"
-    puts [ s.black,   s.black.bold,   s.white.bold.on_black   ].join ' '
-    puts [ s.red,     s.red.bold,     s.white.bold.on_red     ].join ' '
-    puts [ s.green,   s.green.bold,   s.white.bold.on_green   ].join ' '
-    puts [ s.yellow,  s.yellow.bold,  s.white.bold.on_yellow  ].join ' '
-    puts [ s.blue,    s.blue.bold,    s.white.bold.on_blue    ].join ' '
-    puts [ s.magenta, s.magenta.bold, s.white.bold.on_magenta ].join ' '
-    puts [ s.cyan,    s.cyan.bold,    s.white.bold.on_cyan    ].join ' '
-    puts [ s.white,   s.white.bold,   s.white.bold.on_white   ].join ' '
+    s = 'Colorize me'
+    puts [s.black,   s.black.bold,   s.white.bold.on_black].join ' '
+    puts [s.red,     s.red.bold,     s.white.bold.on_red].join ' '
+    puts [s.green,   s.green.bold,   s.white.bold.on_green].join ' '
+    puts [s.yellow,  s.yellow.bold,  s.white.bold.on_yellow].join ' '
+    puts [s.blue,    s.blue.bold,    s.white.bold.on_blue].join ' '
+    puts [s.magenta, s.magenta.bold, s.white.bold.on_magenta].join ' '
+    puts [s.cyan,    s.cyan.bold,    s.white.bold.on_cyan].join ' '
+    puts [s.white,   s.white.bold,   s.white.bold.on_white].join ' '
   end
 
   def test_named_color_code_with_fg_bg
-    puts "Colorize me".fg(:green).bg(:red).bold.underline
+    puts 'Colorize me'.fg(:green).bg(:red).bold.underline
   end
 
   def test_just_code
@@ -130,50 +132,50 @@ class TestAnsi256 < Minitest::Test
 
     assert_equal "\e[38;5;100mHello\e[38;5;200m world\e[0m", "#{'Hello'.fg(100)} world".fg(200)
     assert_equal "\e[38;5;200;4mWow \e[38;5;100mhello\e[38;5;200m world\e[0m",
-      "Wow #{'hello'.fg(100)} world".fg(200).underline
+                 "Wow #{'hello'.fg(100)} world".fg(200).underline
     assert_equal "\e[38;5;200mWow \e[38;5;100;4mhello\e[0m\e[38;5;200m world\e[0m",
-      "Wow #{'hello'.fg(100).underline} world".fg(200)
+                 "Wow #{'hello'.fg(100).underline} world".fg(200)
     assert_equal "\e[38;5;200mWow \e[38;5;100;48;5;50;4mhello\e[0m\e[38;5;200m world\e[0m",
-      "Wow #{'hello'.fg(100).underline.bg(50)} world".fg(200)
+                 "Wow #{'hello'.fg(100).underline.bg(50)} world".fg(200)
     assert_equal "\e[38;5;200;48;5;250mWow \e[38;5;100;48;5;50;4mhello\e[0m\e[38;5;200;48;5;250m world\e[0m",
-      "Wow #{'hello'.fg(100).underline.bg(50)} world".fg(200).bg(250)
-    assert_equal "Wow hello world",
-      "Wow #{'hello'.fg(100).underline.bg(50)} world".fg(200).bg(250).plain
+                 "Wow #{'hello'.fg(100).underline.bg(50)} world".fg(200).bg(250)
+    assert_equal 'Wow hello world',
+                 "Wow #{'hello'.fg(100).underline.bg(50)} world".fg(200).bg(250).plain
 
     assert_equal "\e[32;48;5;200;1mWow \e[38;5;100;44;1;4mhello\e[0m\e[32;48;5;200;1m world\e[0m",
-      "Wow #{'hello'.fg(100).underline.on_blue} world".green.bold.bg(200)
+                 "Wow #{'hello'.fg(100).underline.on_blue} world".green.bold.bg(200)
   end
 
   def test_rgb
     {
-      '00'     => 16,
+      '00' => 16,
       '000000' => 16,
-      '111'    => 16,
-      '11'     => 232,
+      '111' => 16,
+      '11' => 232,
       '101010' => 16,
-      '1a'     => 233,
+      '1a' => 233,
       '1a1a1a' => 16,
-      '20'     => 234,
-      '22'     => 234,
+      '20' => 234,
+      '22' => 234,
       '202020' => 16,
       '222222' => 16,
       '222222' => 16,
-      'ff'     => 255,
+      'ff' => 255,
       'ffffff' => 231,
       'FFFFFF' => 231,
-      'ff0'    => 226,
+      'ff0' => 226,
       'ffff00' => 226,
       'ff0000' => 196,
       '00ff00' => 46,
       '0000ff' => 21,
       'ff9900' => 214,
       '00ffff' => 51,
-      '0ff'    => 51,
+      '0ff' => 51
     }.each do |rgb, ansi|
       assert_equal ansi, Ansi256.fg(rgb).scan(/[0-9]+/).last.to_i
       assert_equal ansi, Ansi256.bg(rgb).scan(/[0-9]+/).last.to_i
     end
-    [:bg, :fg].each do |m|
+    %i[bg fg].each do |m|
       (0..255).each do |r|
         color = r.to_s(16).rjust(2, '0') * 3
         print Ansi256.send(m, color, color + ' ')
@@ -191,27 +193,27 @@ class TestAnsi256 < Minitest::Test
         end
       end
     end
-    puts "RGB Color".fg('ff9900').bg('003366')
-    puts "RGB Color".fg('f90').bg('#036')
-    puts "RGB Color".fg('#ff9900').bg('#003366')
-    puts "RGB Color (Monochrome)".fg('ef').bg('3a')
+    puts 'RGB Color'.fg('ff9900').bg('003366')
+    puts 'RGB Color'.fg('f90').bg('#036')
+    puts 'RGB Color'.fg('#ff9900').bg('#003366')
+    puts 'RGB Color (Monochrome)'.fg('ef').bg('3a')
   end
 
   def test_enabled
     2.times do
-      [:fg, :bg].each do |m|
+      %i[fg bg].each do |m|
         assert Ansi256.enabled?
-        hello = "hello".send(m, 'f90')
+        hello = 'hello'.send(m, 'f90')
         assert_equal 'hello', hello.plain
 
         Ansi256.enabled = false
         assert !Ansi256.enabled?
-        assert hello.length > "hello".send(m, 'f90').length
+        assert hello.length > 'hello'.send(m, 'f90').length
         assert_equal 'hello', hello.plain
 
         Ansi256.enabled = true
         assert Ansi256.enabled?
-        assert_equal hello, "hello".send(m, 'f90')
+        assert_equal hello, 'hello'.send(m, 'f90')
       end
     end
   end
