@@ -1,10 +1,11 @@
 # ansi256
 
-ansi256 is a rubygem for colorizing text with 256-color ANSI codes.
+ansi256 is a rubygem for colorizing text with ANSI escape codes.
 
 Features:
 
-- Supports both named color codes and numeric 256-color codes
+- True 24-bit color, named colors, and 256-color support
+- Underline styles (curly, double, dotted, dashed) and underline colors
 - Allows nesting of colored text
 - Generates optimal(shortest) code sequence
 
@@ -29,6 +30,13 @@ puts "Colorize me".fg(111).bg(226)
 # Also with underline
 puts "Colorize me".fg(111).bg(226).underline
 
+# Underline styles (single, double, curly, dotted, dashed)
+puts "Colorize me".underline(:curly)
+
+# Underline with color (256-color index or hex RGB)
+puts "Colorize me".underline(:curly, 'ff9900')
+puts "Colorize me".underline(214)
+
 # Strip ANSI codes
 puts "Colorize me".fg(111).bg(226).underline.plain
 ```
@@ -51,7 +59,9 @@ puts [ s.white,   s.white.bold,   s.white.bold.on_white   ].join ' '
 
 ![colorize-me-16](https://github.com/junegunn/ansi256/raw/master/colorize-me-16.png)
 
-### RGB color approximated to 256-color ANSI code
+### RGB hex colors
+
+RGB hex strings produce true 24-bit color (`\e[38;2;R;G;Bm`) by default.
 
 ```ruby
 puts "RGB Color (RRGGBB)".fg('ff9930').bg('203366')
@@ -59,6 +69,12 @@ puts "RGB Color (RRGGBB)".fg('ff9930').bg('203366')
 puts "RGB Color (R-G-B-)".fg('f90').bg('036')
 
 puts "RGB Color (Monochrome)".fg('ef').bg('3f')
+```
+
+To approximate RGB to 256-color indices instead (for legacy terminals):
+
+```ruby
+Ansi256.truecolor = false
 ```
 
 Nesting
@@ -108,43 +124,6 @@ Ansi256.enabled = $stdout.tty?
 
 "Hello".fg(232)
   # Hello
-```
-
-ansi256 executable
-------------------
-
-Ansi256 comes with `ansi256` script which can be used as follows
-
-```bash
-usage: ansi256 [-b] [-d] [-i] [-u] <[fg][/bg]> [message]
-
-# Numeric color codes
-ansi256 232 "Hello world"
-ansi256 /226 "Hello world"
-ansi256 232/226 "Hello world"
-
-# Named color codes
-ansi256 yellow "Hello world"
-ansi256 /blue "Hello world"
-ansi256 yellow/blue "Hello world"
-
-# RGB colors (only support 6-letter hex codes)
-ansi256 ff9900/000033 "Hello world"
-
-# Mixed color codes
-ansi256 yellow/232 "Hello world"
-
-# Bold yellow
-ansi256 yellow/232 -b "Hello world"
-
-# With underline
-ansi256 yellow/232 -b -u "Hello world"
-
-# Colorizing STDIN
-find / | ansi256 -u /226
-
-# Nesting
-ansi256 30 "Say '$(ansi256 230/75 "Hello $(ansi256 -u 232/226 World)")'"
 ```
 
 Color chart

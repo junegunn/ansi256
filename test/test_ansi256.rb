@@ -149,34 +149,39 @@ class TestAnsi256 < Minitest::Test
   end
 
   def test_rgb
+    # Truecolor mode (default): 38;2;R;G;B
     {
-      '00' => 16,
-      '000000' => 16,
-      '111' => 16,
-      '11' => 232,
-      '101010' => 16,
-      '1a' => 233,
-      '1a1a1a' => 16,
-      '20' => 234,
-      '22' => 234,
-      '202020' => 16,
-      '222222' => 16,
-      '222222' => 16,
-      'ff' => 255,
-      'ffffff' => 231,
-      'FFFFFF' => 231,
-      'ff0' => 226,
-      'ffff00' => 226,
-      'ff0000' => 196,
-      '00ff00' => 46,
-      '0000ff' => 21,
-      'ff9900' => 214,
-      '00ffff' => 51,
-      '0ff' => 51
-    }.each do |rgb, ansi|
-      assert_equal ansi, Ansi256.fg(rgb).scan(/[0-9]+/).last.to_i
-      assert_equal ansi, Ansi256.bg(rgb).scan(/[0-9]+/).last.to_i
+      '00'     => [0, 0, 0],
+      '000000' => [0, 0, 0],
+      '111'    => [17, 17, 17],
+      '11'     => [17, 17, 17],
+      '101010' => [16, 16, 16],
+      '1a'     => [26, 26, 26],
+      '1a1a1a' => [26, 26, 26],
+      '20'     => [32, 32, 32],
+      '22'     => [34, 34, 34],
+      '202020' => [32, 32, 32],
+      '222222' => [34, 34, 34],
+      'ff'     => [255, 255, 255],
+      'ffffff' => [255, 255, 255],
+      'FFFFFF' => [255, 255, 255],
+      'ff0'    => [255, 255, 0],
+      'ffff00' => [255, 255, 0],
+      'ff0000' => [255, 0, 0],
+      '00ff00' => [0, 255, 0],
+      '0000ff' => [0, 0, 255],
+      'ff9900' => [255, 153, 0],
+      '00ffff' => [0, 255, 255],
+      '0ff'    => [0, 255, 255],
+    }.each do |hex, (r, g, b)|
+      assert_equal "\e[38;2;#{r};#{g};#{b}m", Ansi256.fg(hex)
+      assert_equal "\e[48;2;#{r};#{g};#{b}m", Ansi256.bg(hex)
     end
+    # # prefix
+    assert_equal "\e[38;2;255;153;0m", Ansi256.fg('#ff9900')
+    assert_equal "\e[48;2;0;51;102m",  Ansi256.bg('#003366')
+
+    # Visual output
     %i[bg fg].each do |m|
       (0..255).each do |r|
         color = r.to_s(16).rjust(2, '0') * 3
@@ -201,6 +206,59 @@ class TestAnsi256 < Minitest::Test
     puts 'RGB Color (Monochrome)'.fg('ef').bg('3a')
   end
 
+  def test_rgb_nesting
+    # Truecolor inner nested inside truecolor outer
+    assert_equal "\e[38;2;0;51;102mHello \e[38;2;255;153;0mWorld\e[38;2;0;51;102m !\e[0m",
+                 "Hello #{'World'.fg('ff9900')} !".fg('003366')
+
+    # Truecolor fg with integer bg
+    assert_equal "\e[38;2;255;153;0;48;5;100mHello\e[0m",
+                 'Hello'.fg('ff9900').bg(100)
+
+    # Integer fg nested inside truecolor fg
+    assert_equal "\e[38;2;0;51;102mHello \e[38;5;100mWorld\e[38;2;0;51;102m !\e[0m",
+                 "Hello #{'World'.fg(100)} !".fg('003366')
+
+    # Truecolor underline color in nesting
+    inner = 'world'.underline(:curly, 'ff0000')
+    result = "hello #{inner} end".fg('003366')
+    assert_equal "\e[38;2;0;51;102mhello \e[4:3;58;2;255;0;0mworld\e[0m\e[38;2;0;51;102m end\e[0m", result
+  end
+
+  def test_rgb_approximation
+    # When truecolor is disabled, fall back to 256-color approximation
+    Ansi256.truecolor = false
+    {
+      '00'     => 16,
+      '000000' => 16,
+      '111'    => 16,
+      '11'     => 232,
+      '101010' => 16,
+      '1a'     => 233,
+      '1a1a1a' => 16,
+      '20'     => 234,
+      '22'     => 234,
+      '202020' => 16,
+      '222222' => 16,
+      'ff'     => 255,
+      'ffffff' => 231,
+      'FFFFFF' => 231,
+      'ff0'    => 226,
+      'ffff00' => 226,
+      'ff0000' => 196,
+      '00ff00' => 46,
+      '0000ff' => 21,
+      'ff9900' => 214,
+      '00ffff' => 51,
+      '0ff'    => 51,
+    }.each do |rgb, ansi|
+      assert_equal ansi, Ansi256.fg(rgb).scan(/[0-9]+/).last.to_i
+      assert_equal ansi, Ansi256.bg(rgb).scan(/[0-9]+/).last.to_i
+    end
+  ensure
+    Ansi256.truecolor = true
+  end
+
   def test_enabled
     2.times do
       %i[fg bg].each do |m|
@@ -218,5 +276,93 @@ class TestAnsi256 < Minitest::Test
         assert_equal hello, 'hello'.send(m, 'f90')
       end
     end
+  end
+
+  # --- Extended underline tests ---
+
+  def test_underline_backward_compat
+    # No-arg: returns SGR code
+    assert_equal "\e[4m", Ansi256.underline
+
+    # String arg: wraps with basic underline
+    assert_equal "\e[4mhello\e[0m", Ansi256.underline('hello')
+    assert_equal "\e[4mhello\e[0m", 'hello'.underline
+  end
+
+  def test_underline_styles
+    assert_equal "\e[4:1mhello\e[0m", 'hello'.underline(:single)
+    assert_equal "\e[4:2mhello\e[0m", 'hello'.underline(:double)
+    assert_equal "\e[4:3mhello\e[0m", 'hello'.underline(:curly)
+    assert_equal "\e[4:4mhello\e[0m", 'hello'.underline(:dotted)
+    assert_equal "\e[4:5mhello\e[0m", 'hello'.underline(:dashed)
+  end
+
+  def test_underline_color_integer
+    assert_equal "\e[58;5;214;4mhello\e[0m", 'hello'.underline(214)
+  end
+
+  def test_underline_color_hex
+    assert_equal "\e[58;2;255;153;0;4mhello\e[0m", 'hello'.underline('ff9900')
+    assert_equal "\e[58;2;255;153;0;4mhello\e[0m", 'hello'.underline('#ff9900')
+    assert_equal "\e[58;2;255;153;0;4mhello\e[0m", 'hello'.underline('f90')
+  end
+
+  def test_underline_style_with_color
+    assert_equal "\e[4:3;58;2;255;153;0mhello\e[0m", 'hello'.underline(:curly, 'ff9900')
+    assert_equal "\e[4:2;58;5;100mhello\e[0m", 'hello'.underline(:double, 100)
+  end
+
+  def test_underline_invalid_style
+    assert_raises(ArgumentError) { 'hello'.underline(:wavy) }
+  end
+
+  def test_underline_invalid_color
+    assert_raises(ArgumentError) { 'hello'.underline(:curly, 'zzzzzz') }
+    assert_raises(ArgumentError) { 'hello'.underline(:curly, -1) }
+    assert_raises(ArgumentError) { 'hello'.underline(:curly, 256) }
+  end
+
+  def test_underline_style_nesting_with_fg
+    # Styled underline nested inside fg color
+    inner = 'world'.underline(:curly)
+    result = "hello #{inner} end".fg(100)
+    assert_equal "\e[38;5;100mhello \e[4:3mworld\e[0m\e[38;5;100m end\e[0m", result
+  end
+
+  def test_underline_color_nesting_with_fg
+    inner = 'world'.underline(:curly, 196)
+    result = "hello #{inner} end".fg(100)
+    assert_equal "\e[38;5;100mhello \e[4:3;58;5;196mworld\e[0m\e[38;5;100m end\e[0m", result
+  end
+
+  def test_underline_disabled_mode
+    Ansi256.enabled = false
+    assert_equal 'hello', 'hello'.underline
+    assert_equal 'hello', 'hello'.underline(:curly)
+    assert_equal 'hello', 'hello'.underline(:curly, 'ff9900')
+    assert_equal 'hello', 'hello'.underline(214)
+    Ansi256.enabled = true
+  end
+
+  def test_underline_module_method_with_style
+    assert_equal "\e[4:3mhello\e[0m", Ansi256.underline('hello', :curly)
+    assert_equal "\e[4:3;58;2;255;153;0mhello\e[0m", Ansi256.underline('hello', :curly, 'ff9900')
+    assert_equal "\e[58;5;214;4mhello\e[0m", Ansi256.underline('hello', 214)
+  end
+
+  def test_underline_named_color
+    # Named color as sole argument (basic underline + color)
+    assert_equal "\e[58;5;1;4mhello\e[0m", 'hello'.underline(:red)
+    assert_equal "\e[58;5;4;4mhello\e[0m", 'hello'.underline(:blue)
+    assert_equal "\e[58;5;0;4mhello\e[0m", 'hello'.underline(:black)
+    assert_equal "\e[58;5;7;4mhello\e[0m", 'hello'.underline(:white)
+
+    # Named color as second argument (style + color)
+    assert_equal "\e[4:3;58;5;1mhello\e[0m", 'hello'.underline(:curly, :red)
+    assert_equal "\e[4:2;58;5;4mhello\e[0m", 'hello'.underline(:double, :blue)
+
+    # Swapped order: color first, style second
+    assert_equal "\e[4:3;58;5;1mhello\e[0m", 'hello'.underline(:red, :curly)
+    assert_equal "\e[4:2;58;5;4mhello\e[0m", 'hello'.underline(:blue, :double)
   end
 end

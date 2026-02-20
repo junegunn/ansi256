@@ -27,6 +27,12 @@ module Ansi256
               Ansi256.send name, self
             end
           end
+
+          # Override underline to accept style and color
+          undef_method(:underline) if method_defined?(:underline)
+          define_method :underline do |*props|
+            Ansi256.underline(self, *props)
+          end
         end
 
         Ansi256.class_eval do
@@ -58,6 +64,12 @@ module Ansi256
               self
             end
           end
+
+          # Override underline to accept style and color (disabled mode)
+          undef_method(:underline) if method_defined?(:underline)
+          define_method :underline do |*props|
+            self
+          end
         end
 
         Ansi256.class_eval do
@@ -74,4 +86,3 @@ module Ansi256
     end
   end
 end
-

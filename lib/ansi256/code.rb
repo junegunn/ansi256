@@ -27,6 +27,14 @@ module Ansi256
     on_white: 47
   }.freeze
 
+  UNDERLINE_STYLES = {
+    single: '4:1',
+    double: '4:2',
+    curly:  '4:3',
+    dotted: '4:4',
+    dashed: '4:5',
+  }.freeze
+
   NAMED_COLORS = Set[
    :black,
    :red,

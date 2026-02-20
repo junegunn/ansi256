@@ -1,6 +1,9 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+# Deprecated: this CLI is no longer maintained.
+# Use the library API directly instead.
+
 require 'rubygems'
 require 'ansi256'
 
