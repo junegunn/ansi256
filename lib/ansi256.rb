@@ -46,6 +46,8 @@ module Ansi256
     end
 
     CODE.each do |name, code|
+      next if name == :underline # defined below
+
       define_method name do |*arg|
         if str = arg.first
           wrap str, "\e[#{code}m"
@@ -55,7 +57,7 @@ module Ansi256
       end
     end
 
-    # Override underline to support styles and colors
+    # Underline with optional styles and colors
     def underline(str = nil, *props)
       if str.nil?
         build_underline_sgr(*props)
